@@ -1,0 +1,64 @@
+services:
+  app_doc:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile-app
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_test_docapp
+    image: ${COMPOSE_PROJECT_NAME:-default}_doc_search_app
+    #command: gunicorn -c ./app/gunicorn.conf.py app.doc_app:app
+    tty: true
+    expose:
+      - 5000
+    networks:
+      - docnet
+    restart: always
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    shm_size: 8g
+    volumes:
+      - .:/usr/src/test
+      - ../src:/usr/src/app
+      - ${ARTIFACTS_DIR}:/tmp/artifacts
+      - ${DATA_DIR}:/tmp/data
+      - ${LOG_DIR}:/tmp/logs
+    environment:
+      HUGGINGFACE_HUB_CACHE: /tmp/artifacts/transformers_cache
+      NLTK_DATA: /tmp/artifacts/nltk
+      CONTAINER_PREFIX: ${COMPOSE_PROJECT_NAME:-default}
+      OPENAI_KEY: ${OPENAI_KEY}
+
+  elasticsearch:
+    image: elasticsearch:7.17.6
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_es_haystack
+    expose:
+      - 9200
+    networks:
+      - docnet
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+    volumes:
+       - esdata_test:/usr/share/elasticsearch/data:rw
+    mem_limit: 8g
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.10
+    networks:
+      - docnet
+    ports: 
+      - "5601:5601"
+    environment:
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_HOSTS: '["http://${COMPOSE_PROJECT_NAME:-default}_es_haystack:9200"]'
+
+volumes:
+  esdata_test:
+    driver: local
+
+networks:
+  docnet: {}

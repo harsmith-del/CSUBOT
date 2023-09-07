@@ -1,0 +1,31 @@
+services:
+  elasticsearch:
+    image: elasticsearch:7.17.6
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_es_haystack
+    expose:
+      - 9200
+    networks:
+      - docnet
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+    volumes:
+      - esdata1-doc2:/usr/share/elasticsearch/data:rw
+    mem_limit: 8g
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.10
+    networks:
+      - docnet
+    ports: 
+      - "${KIBANA_PORT}:5601"
+    environment:
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_HOSTS: '["http://${COMPOSE_PROJECT_NAME:-default}_es_haystack:9200"]'
+
+volumes:
+  esdata1-doc2:
+    driver: local
+  esdata1-highered:
+    driver: local

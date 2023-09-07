@@ -1,0 +1,16 @@
+.DS_Store
+.venv/
+.vscode/
+.hypothesis/
+.scannerwork/
+__pycache__/
+
+artifacts/
+data/
+context/
+logs/
+.env
+!test/data/
+test/.coverage
+src/app/summarizer_test.py
+src/app/semoss_test.py

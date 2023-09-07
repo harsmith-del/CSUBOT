@@ -1,0 +1,13 @@
+farm-haystack[faiss, elasticsearch]==1.16.1
+nltk==3.8.1
+fastapi==0.95.1
+python-multipart
+pydantic==1.10.7
+uvicorn[standard]==0.22.0
+pytest==7.3.1
+python-docx==0.8.11
+tika==1.24
+mlflow==2.3.1 # not directly required, pinned by Snyk to avoid a vulnerability
+numpy>=1.22.2 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+loguru

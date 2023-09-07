@@ -1,0 +1,83 @@
+services:
+  doc_gui:
+    image: nginx
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_docgui
+    ports:
+      - "${GUI_PORT}:80"
+    networks:
+      - docnet
+    volumes:
+      - ../src/templates:/usr/share/nginx/html/
+      - ../src/nginx/templates:/etc/nginx/templates
+    env_file:
+      - ../.env
+    environment:
+      CONTAINER_PREFIX: ${COMPOSE_PROJECT_NAME:-default}
+
+  st_doc_gui:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile-stgui
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_st_docgui
+    image: ${COMPOSE_PROJECT_NAME:-default}_st_docgui
+    ports:
+      - "${ST_PORT}:8501"
+    networks:
+      - docnet
+    restart: always
+    tty: true
+    volumes:
+      - ../src/gui:/usr/src/gui/
+    environment:
+      CONTAINER_PREFIX: ${COMPOSE_PROJECT_NAME:-default}
+
+  doc_app:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile-app
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_docapp
+    image: ${COMPOSE_PROJECT_NAME:-default}_docapp
+    command: python3 ./app/doc_app.py
+    expose:
+      - 5000
+    ports: 
+      - ${APP_PORT}:5000
+    networks:
+      - docnet
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    shm_size: 8g
+    volumes:
+      - ../src:/usr/src/app
+      - ${ARTIFACTS_DIR}:/tmp/artifacts
+      - ${DATA_DIR}:/tmp/data
+      - ${LOG_DIR}:/tmp/logs
+    environment:
+      HUGGINGFACE_HUB_CACHE: /tmp/artifacts/transformers_cache
+      SENTENCE_TRANSFORMERS_HOME: /tmp/artifacts/transformers_cache
+      NLTK_DATA: /tmp/artifacts/nltk_data
+      CONTAINER_PREFIX: ${COMPOSE_PROJECT_NAME:-default}
+      DOCUMENT_STORE: ${DOCUMENT_STORE}
+      OPENAI_KEY: ${OPENAI_KEY}
+
+  tika:
+    container_name: ${COMPOSE_PROJECT_NAME:-default}_tika
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile-tika
+    restart: on-failure
+    depends_on:
+      - doc_app
+    expose:
+      - 9998
+    networks:
+      - docnet
+    env_file:
+      - ../.env
+
+networks:
+  docnet: {}

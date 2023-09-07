@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document Summarizer</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <section id="search">
+        <header>
+          <h1>DOC Bot</h1>
+          <h2>Document Summarizer</h2>
+        </header>
+
+        <form name="search">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="search-icon"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M456.69 421.39L362.6 327.3a173.81 173.81 0 0034.84-104.58C397.44 126.38 319.06 48 222.72 48S48 126.38 48 222.72s78.38 174.72 174.72 174.72A173.81 173.81 0 00327.3 362.6l94.09 94.09a25 25 0 0035.3-35.3zM97.92 222.72a124.8 124.8 0 11124.8 124.8 124.95 124.95 0 01-124.8-124.8z"
+            />
+          </svg>
+
+          <textarea
+            class="search auto-expand"
+            name="query"
+            type="text"
+            placeholder="What can I help you with?"
+            spellcheck="false"
+            autocomplete="off"
+            rows="1"
+            data-min-rows="1"
+            required
+          ></textarea>
+
+          <button
+            class="voice"
+            type="button"
+            aria-label="Click to enter value by voice"
+          >
+            <svg
+              width="16"
+              height="24"
+              viewBox="0 0 16 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="mic"
+            >
+              <g clip-path="url(#clip0_1_2)">
+                <path
+                  d="M8 1C7.20435 1 6.44129 1.31607 5.87868 1.87868C5.31607 2.44129 5 3.20435 5 4V12C5 12.7956 5.31607 13.5587 5.87868 14.1213C6.44129 14.6839 7.20435 15 8 15C8.79565 15 9.55871 14.6839 10.1213 14.1213C10.6839 13.5587 11 12.7956 11 12V4C11 3.20435 10.6839 2.44129 10.1213 1.87868C9.55871 1.31607 8.79565 1 8 1Z"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M15 10V12C15 13.8565 14.2625 15.637 12.9497 16.9497C11.637 18.2625 9.85652 19 8 19C6.14348 19 4.36301 18.2625 3.05025 16.9497C1.7375 15.637 1 13.8565 1 12V10"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 19V23"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M4 23H12"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_1_2">
+                  <rect width="16" height="24" />
+                </clipPath>
+              </defs>
+            </svg>
+          </button>
+
+          <button
+            class="submit"
+            type="submit"
+            aria-label="Click to search document"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="arrow white"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="48"
+                d="M268 112l144 144-144 144M392 256H100"
+              />
+            </svg>
+          </button>
+        </form>
+      </section>
+
+      <section id="loading">
+        <span class="loader"></span>
+      </section>
+
+      <section id="error">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <p></p>
+      </section>
+
+      <section id="result">
+        <h3>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Generated Summary
+        </h3>
+        <p></p>
+      </section>
+
+      <section id="sources">
+        <h3>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+
+          Potentially Relevant Document Sections
+        </h3>
+        <ol></ol>
+      </section>
+    </main>
+
+    <div class="watermark">D<span class="deloitte-green">.</span></div>
+  </body>
+
+  <script>
+    /* Form: Search */
+
+    function displayRelevantDocs(relevant_docs) {
+      const $sources = document.getElementById("sources");
+      const $list = $sources.querySelector("ol");
+
+      for (let i = 0; i < relevant_docs.length; i++) {
+        const percent = relevant_docs[i].score * 100;
+        const maxStatusBlocks = 3;
+
+        const $item = document.createElement("li");
+        const $section = document.createElement("section");
+        const $metadata = document.createElement("div");
+
+        const $score = document.createElement("div");
+        const $score_label = document.createElement("span");
+        const $score_status = document.createElement("div");
+        const $score_status_block = document.createElement("div");
+        const $score_percent = document.createElement("span");
+
+        const $source = document.createElement("div");
+        const $source_label = document.createElement("span");
+        const $source_cite = document.createElement("cite");
+        const $source_link = document.createElement("a");
+
+        const $content = document.createElement("blockquote");
+
+        let statusBlocks = 0;
+
+        $metadata.classList.add("metadata");
+
+        $score.classList.add("score");
+        $score_label.classList.add("label");
+        $score_percent.classList.add("percent");
+        $score_status.classList.add("status");
+
+        $source.classList.add("source");
+
+        if (percent > 90) {
+          statusBlocks = 3;
+        } else if (percent > 80) {
+          statusBlocks = 2;
+        } else {
+          statusBlocks = 1;
+        }
+
+        $source_label.classList.add("label");
+
+        $content.textContent = relevant_docs[i].content;
+
+        $score_label.textContent = "Relevance:";
+        $score_percent.textContent = `${percent.toFixed(2)}%`;
+
+        $source_link.href = relevant_docs[i].url;
+        $source_link.target = "_blank";
+        $source_link.textContent = `${relevant_docs[i].section} | Acqusition.gov`;
+
+        $source_label.textContent = "Source:";
+
+        for (let i = 0; i < maxStatusBlocks; i++) {
+          const _score_status_block = $score_status_block.cloneNode();
+
+          if (statusBlocks > 0) {
+            _score_status_block.classList.add(getStatusColor(percent));
+
+            statusBlocks--;
+          }
+
+          $score_status.append(_score_status_block);
+        }
+
+        $score.append($score_label, $score_status, $score_percent);
+        $source_cite.append($source_link);
+        $source.append($source_label, $source_cite);
+        $metadata.append($score, $source);
+        $section.append($content, $metadata);
+        $item.append($section);
+        $list.append($item);
+      }
+    }
+
+    function displaySummary(summary) {
+      const parts = summary.split(/(,|\.)/);
+      const length = parts.length;
+      const p = document.getElementById("result").querySelector("p");
+
+      document.getElementById("result").classList.add("visible");
+
+      p.style.position = "relative";
+
+      document.getElementById(
+        "sources"
+      ).style.transitionDelay = `calc(0.2s * ${length})`;
+
+      for (let i = 0; i < length; i++) {
+        const text = parts.shift();
+        const span = document.createElement("span");
+
+        span.style = `--index: ${i}`;
+        span.textContent = text;
+        // span.innerHTML = text.replace(/(\[\d\])/g, (match) => {
+        //   return `<sup>${match}</sup>`;
+        // });
+
+        p.append(span);
+
+        setTimeout(() => span.classList.add("visible"));
+      }
+
+      p.parentElement.style = `position: relative; max-height: 30rem; overflow: hidden;`;
+    }
+
+    function displayError(message) {
+      const parts = message.split(/(,|\.)/);
+      const length = parts.length;
+      const p = document.getElementById("error").querySelector("p");
+
+      for (let i = 0; i < length; i++) {
+        const text = parts.shift();
+        const span = document.createElement("span");
+
+        span.style = `--index: ${i}`;
+        span.innerHTML = text.replace(/(\[\d\])/g, (match) => {
+          return `<sup>${match}</sup>`;
+        });
+
+        p.append(span);
+
+        setTimeout(() => span.classList.add("visible"));
+      }
+    }
+
+    function getStatusColor(percent) {
+      if (percent > 90) {
+        return "green";
+      } else if (percent > 80) {
+        return "yellow";
+      } else {
+        return "red";
+      }
+    }
+
+    function resetRelevantDocs() {
+      const sources = document.getElementById("sources");
+
+      sources.removeAttribute("style");
+      sources.querySelector("ol").innerHTML = "";
+    }
+
+    function resetSummary() {
+      const result = document.getElementById("result");
+
+      result.classList.remove("visible");
+      result.querySelector("p").innerHTML = "";
+    }
+
+    function resetError() {
+      document.getElementById("error").querySelector("p").innerHTML = "";
+    }
+
+    function onTextareaSubmit(e) {
+      if (e.key === "Enter" && e.shiftKey === false) {
+        e.preventDefault();
+
+        document.forms.search.requestSubmit(
+          document.forms.search.querySelector("button[type=submit]")
+        );
+      }
+    }
+
+    async function search(e) {
+      e.preventDefault();
+      e.submitter.disabled = true;
+
+      const error = document.getElementById("error");
+      const loading = document.getElementById("loading");
+
+      error.classList.remove("visible");
+
+      loading.classList.remove("hide");
+      loading.classList.add("visible");
+
+      resetError();
+      resetSummary();
+      resetRelevantDocs();
+
+      const { query } = Object.fromEntries(new FormData(e.target));
+
+      try {
+        const response = await fetch("/search/summarization", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query,
+            n_retrieve: 10,
+            n_rank: 5,
+          }),
+        });
+
+        loading.classList.remove("visible");
+
+        const { relevant_docs, summary } = await response.json();
+
+        displaySummary(summary);
+        displayRelevantDocs(relevant_docs);
+      } catch (err) {
+        loading.classList.add("hide");
+
+        error.classList.add("visible");
+
+        displayError(
+          "Oops, an error occurred. Please modify your request and try again."
+        );
+
+        e.submitter.disabled = false;
+      }
+
+      e.submitter.disabled = false;
+      e.target.classList.add("submitted");
+    }
+
+    document
+      .querySelector("textarea.search")
+      .addEventListener("keydown", onTextareaSubmit);
+
+    document.forms.search.addEventListener("submit", search);
+
+    /* Textarea: Auto Resize */
+
+    function getScrollHeight(el) {
+      const value = el.value;
+
+      el.value = "";
+      el._baseScrollHeight = el.scrollHeight;
+      el.value = value;
+    }
+
+    function onTextareaAutoResize({ target: el }) {
+      if (
+        el.classList.contains("auto-expand") === false ||
+        el.nodeName !== "TEXTAREA"
+      ) {
+        return;
+      }
+
+      // multiply by 1 to convert to number
+      const minRows = (el.dataset.minRows ?? 0) * 1;
+
+      const lineHeight = 24; // px
+
+      // if baseScrollHeight isn't set, set it
+      el._baseScrollHeight ?? getScrollHeight(el);
+
+      el.rows = minRows;
+
+      let addedRows = Math.ceil(
+        (el.scrollHeight - el._baseScrollHeight) / lineHeight
+      );
+
+      el.rows += addedRows;
+    }
+
+    document
+      .querySelector("textarea.search")
+      .addEventListener("input", onTextareaAutoResize);
+
+    /* Speech Recognition */
+
+    // INFO: Speech Recognition API is hidden behind a flag on Firefox
+    // To enable in Firefox, see "How can I use it?":
+    // https://wiki.mozilla.org/Web_Speech_API_-_Speech_Recognition#How_can_I_use_it.3F
+    window.SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const recognition = new SpeechRecognition();
+
+    let recording = false;
+    let recordingId;
+
+    function toggleRecording() {
+      if (recording) {
+        recognition.abort();
+
+        recording = false;
+
+        document
+          .querySelector("button.voice .mic")
+          .classList.remove("recording");
+      } else {
+        recognition.start();
+
+        recording = true;
+
+        document.querySelector("button.voice .mic").classList.add("recording");
+      }
+    }
+
+    function updateTextarea(e) {
+      document.querySelector("textarea.search").value =
+        e.results[0][0].transcript;
+
+      onTextareaAutoResize({
+        target: document.querySelector("textarea.search"),
+      });
+
+      if (e.results[0].isFinal) {
+        document.querySelector("textarea.search").focus();
+      }
+    }
+
+    function stopRecording() {
+      recognition.stop();
+
+      recording = false;
+
+      document.querySelector("button.voice .mic").classList.remove("recording");
+    }
+
+    if (recognition) {
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 10;
+
+      recognition.addEventListener("result", updateTextarea);
+      recognition.addEventListener("speechend", stopRecording);
+
+      document
+        .querySelector("button.voice")
+        .addEventListener("click", toggleRecording);
+    }
+  </script>
+</html>
