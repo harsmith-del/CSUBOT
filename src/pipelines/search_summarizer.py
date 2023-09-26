@@ -8,7 +8,10 @@ from typing import Dict, List, Optional, Tuple, Union, Any
 from haystack import Pipeline
 from haystack.nodes import BM25Retriever, EmbeddingRetriever, \
     TfidfRetriever, SentenceTransformersRanker,\
-    TransformersSummarizer, DocumentMerger, JoinDocuments, PromptModel
+    TransformersSummarizer, DocumentMerger, JoinDocuments
+
+from haystack.nodes import  PromptNode, PromptTemplate, PromptModel
+from haystack.nodes.prompt.shapers import AnswerParser
 from haystack.document_stores import BaseDocumentStore
 from haystack.schema import Document
 
@@ -20,7 +23,6 @@ from nodes import RetrievalEnricher, PromptNodeWrapped
 from util import connect_to_docstore
 from util.vars import EMBEDDING_MODEL, EMBEDDING_MODEL_FORMAT
 
-API_KEY = os.environ["OPENAI_KEY"]
 
 class SearchSummarizer:
     """pipeline for query-based search, document retrival, and summarization of results"""
@@ -93,13 +95,21 @@ class SearchSummarizer:
                                                     use_gpu=True,
                                                     )
         elif summarizer == 'openai':
-            prompt_open_ai = PromptModel(model_name_or_path="text-davinci-003", 
-                                         api_key=API_KEY, max_length=400, 
-                                         use_gpu=True
-                                         )
-            summarizer_node = PromptNodeWrapped(prompt_open_ai,
-                                                default_prompt_template="question-answering-per-document",
-                                                )
+            print('setting up openai summarizer')
+            try:
+                API_KEY = os.environ["OPENAI_KEY"]
+            except:
+                raise('OpenAI API Key not found')
+            
+            custom_prompt = PromptTemplate(prompt="""Synthesize a comprehensive answer from the following topk most relevant paragraphs and the given question. 
+                             Provide a clear and concise response that summarizes the key points and information presented in the paragraphs. 
+                             You must only use information from the given documents.
+                             If the documents do not contain the answer to the question, say that answering is not possible given the available information.
+                             Your answer should be in your own words and be no longer than 50 words. 
+                             \n\n Paragraphs: {join(documents)} \n\n Question: {query} \n\n Answer:""",
+                             output_parser=AnswerParser(),) 
+
+            summarizer_node = PromptNodeWrapped("text-davinci-003", default_prompt_template=custom_prompt, api_key=API_KEY)
         else:
             raise NotImplementedError(f'summarizer choice: {summarizer} not recognized')
 

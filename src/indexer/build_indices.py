@@ -19,8 +19,9 @@ from indexer import DOCIndexer
 from util.vars import EMBEDDING_MODEL, EMBEDDING_MODEL_FORMAT
 
 #build indices for desired retriever types
-def build_index(doc_name: str = 'document', 
-                data_path: str = '/tmp/data', 
+
+def build_index(doc_name: str = 'PyramidDocs', 
+                data_path: str = r"C:\Users\harsmith\Documents\GitHub\CSUBOT\data",
                 ds_path: str = '/tmp/data', 
                 retriever: str ='Embedding', 
                 docstore_type: str = 'elasticsearch') -> None:
@@ -33,6 +34,7 @@ def build_index(doc_name: str = 'document',
         retriever: str, retriever type, used for generating embeddings as needed
         docstore_type: str, type of document store: currently allows: sql, faiss, elasticsearch
     """
+    data_path = r"C:\Users\harsmith\Documents\GitHub\CSUBOT\data"
     ds_path = Path(ds_path)
     try:
         container_prefix = os.environ['CONTAINER_PREFIX']
@@ -64,10 +66,12 @@ def build_index(doc_name: str = 'document',
         document_store = SQLDocumentStore(f"sqlite:///{str(sql_dir)}/sql_index_{doc_name}_{retriever}.db")
     else:
         raise NotImplementedError(f'no known document store type: {docstore_type}')
-
+  
+    print("------------DATA PATH:",data_path)
     t_start = time.time()
     extracted_docs = DOCExtractorDefault(name=doc_name,
                                          dir=data_path)
+    #print("Directory Name in Extractor:",extracted_docs.dir)
     indexer = DOCIndexer(document_store)
     if len(extracted_docs.get_fragments()) == 0:
         raise Exception("No data found, please add data or correct path.")
@@ -98,15 +102,11 @@ def build_index(doc_name: str = 'document',
 if __name__ == "__main__":
     docstore_type = os.environ['DOCUMENT_STORE']
     configs = [      #tuple of: doc_name, retriever, docstore type
-                    ('ferpa1','Embedding',  docstore_type),
-                    ('ferpa2', 'Embedding', docstore_type),
-                    ('ferpa3', 'Embedding', docstore_type),
-                    ('ferpa4', 'Embedding', docstore_type),
-                    ('hipaa', 'Embedding', docstore_type),
+                    ('doc_embedding','Embedding',  docstore_type),
                 ]  
     for doc_name, retriever, _docstore_type in configs:
         build_index(doc_name = doc_name,
-                    data_path = '/tmp/data',
+                    data_path = '/tmp/data/FAR_dita_html',
                     ds_path='/tmp/data', 
                     retriever=retriever,
                     docstore_type=_docstore_type)

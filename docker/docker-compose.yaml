@@ -1,7 +1,7 @@
 services:
   doc_gui:
     image: nginx
-    container_name: ${COMPOSE_PROJECT_NAME:-default}_docgui
+    container_name: $${COMPOSE_PROJECT_NAME:-default}_docgui
     ports:
       - "${GUI_PORT}:80"
     networks:
@@ -45,11 +45,11 @@ services:
     networks:
       - docnet
     restart: always
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+    #deploy:
+      #resources:
+        #reservations:
+          #devices:
+            #- capabilities: [gpu]
     shm_size: 8g
     volumes:
       - ../src:/usr/src/app

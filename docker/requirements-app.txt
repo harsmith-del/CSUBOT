@@ -1,4 +1,4 @@
-farm-haystack[faiss, elasticsearch]==1.16.1
+farm-haystack[faiss, elasticsearch, inference]==1.19.0
 nltk==3.8.1
 fastapi==0.95.1
 python-multipart

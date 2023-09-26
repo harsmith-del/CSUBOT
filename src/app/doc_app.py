@@ -118,9 +118,9 @@ async def search(pipeline: str, data: SearchData) -> Response:
         default_enricher = 'next_document'
         default_summarizer = 'local'
 
-        f = open(CONTEXT.format(document='default'))
+        f = open(CONTEXT.format(document=ES_INDEX))
         context_list = json.load(f)
-        f = open(FRAGMENT_TO_CONTEXT.format(document='default'))
+        f = open(FRAGMENT_TO_CONTEXT.format(document=ES_INDEX))
         sentence_context_dict = json.load(f)
         sentence_context_dict = {int(k):v for k,v in sentence_context_dict.items()}
         document_store = connect_to_docstore(retriever=default_retriever,
@@ -145,7 +145,7 @@ async def build_pipeline(pipeline: str, params: PipelineParams) -> Response:
         pipeline: type of search pipeline. currently summarization or qa
         data: PipelineParams parmaterizing the search pipeline
     """
-    app.logger.info(f'rebuidling the {pipeline} pipeline for document:  {params.document}')
+    app.logger.info(f'rebuidling the {pipeline} pipeline for document: {params.document}, summarizer {params.summarizer}')
     
     f = open(CONTEXT.format(document=params.document))
     context_list = json.load(f)

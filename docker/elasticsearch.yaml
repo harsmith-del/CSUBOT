@@ -11,7 +11,7 @@ services:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
     volumes:
-      - esdata1-doc2:/usr/share/elasticsearch/data:rw
+      - esdata1-ginnie:/usr/share/elasticsearch/data:rw
     mem_limit: 8g
 
   kibana:
@@ -25,7 +25,5 @@ services:
       ELASTICSEARCH_HOSTS: '["http://${COMPOSE_PROJECT_NAME:-default}_es_haystack:9200"]'
 
 volumes:
-  esdata1-doc2:
-    driver: local
-  esdata1-highered:
+  esdata1-ginnie:
     driver: local

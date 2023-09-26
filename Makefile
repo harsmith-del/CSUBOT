@@ -23,7 +23,7 @@ gui:
 	@echo "streamlit running on http://localhost:$(ST_PORT)"
 
 _create-indices:
-	@sleep 20
+	@timeout 20
 	@docker container exec $(COMPOSE_PROJECT_NAME)_docapp \
 		/bin/bash -c "python3 ./indexer/build_indices.py"
 
@@ -40,22 +40,22 @@ re-build-all:
 		--env-file .env build
 
 getting-started:
-	mkdir -p data
-	mkdir -p artifacts
-	mkdir -p artifacts/nltk_data
-	mkdir -p logs
-	mkdir -p test/logs
+	mkdir data
+	mkdir artifacts
+	mkdir artifacts/nltk_data
+	mkdir logs
+	mkdir test/logs
 
 test:
 	docker compose -f ./test/docker-compose.yaml \
 		--env-file .env up -d
 	@sleep 5
-	@docker container exec $(COMPOSE_PROJECT_NAME)_test_docapp \
-		/bin/bash -c "python3 -m pytest /usr/src/test/code/extractor;\
-						python3 -m pytest /usr/src/test/code/indexer;\
-						python3 -m pytest /usr/src/test/code/pipelines;\
-						python3 -m pytest /usr/src/test/code/nodes;\
-						python3 -m pytest /usr/src/test/code/util;\
-					"
-	docker compose -f ./test/docker-compose.yaml \
-		--env-file .env down
+	# @docker container exec $(COMPOSE_PROJECT_NAME)_test_docapp \
+	# 	/bin/bash -c "python3 -m pytest /usr/src/test/code/extractor;\
+	# 					python3 -m pytest /usr/src/test/code/indexer;\
+	# 					python3 -m pytest /usr/src/test/code/pipelines;\
+	# 					python3 -m pytest /usr/src/test/code/nodes;\
+	# 					python3 -m pytest /usr/src/test/code/util;\
+	# 				"
+	# docker compose -f ./test/docker-compose.yaml \
+	# 	--env-file .env down

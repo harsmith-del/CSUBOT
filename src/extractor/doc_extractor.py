@@ -175,6 +175,8 @@ class DOCExtractorDefault(DOCExtractorBase):
             context_loc: path to store context data
             fragment_to_context_loc: path to store fragment to context mapping
         """
+        print("Directory Name in Extractor:",dir)
+        print(os.listdir(dir))
         self.name = name
         self.context_loc = context_loc.format(document=name)
         self.fragment_to_context_loc = fragment_to_context_loc.format(document=name)
